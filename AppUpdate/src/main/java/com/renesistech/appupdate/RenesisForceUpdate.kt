@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.LayoutInflater
+import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -27,13 +28,13 @@ class RenesisForceUpdate(activityRef: AppCompatActivity) {
     private val progressDialog: AlertDialog? by lazy { getProgressDialog(currentActivity.get()) }
     private var messageCode = 0
 
-    var buttonBackgroundColor:Int ? = null
-    var progressBarColor:Int ? = null
-    var buttonTextColor:Int ? = null
-    var contentColor:Int ? = null
-    var cardBackgroundColor:Int ? = null
-    var defaultLogo:Int ? = null
-
+    var buttonBackgroundColor: Int? = null
+    var progressBarColor: Int? = null
+    var enabledProgressBar: Boolean = true
+    var buttonTextColor: Int? = null
+    var contentColor: Int? = null
+    var cardBackgroundColor: Int? = null
+    var defaultLogo: Int? = null
 
 
     fun startCheckForUpdatedVersion(
@@ -41,7 +42,9 @@ class RenesisForceUpdate(activityRef: AppCompatActivity) {
         appCurrentVersion: String,
         onCompletion: (Int) -> Unit
     ) {
-        progressDialog?.show()
+        if (enabledProgressBar) {
+            progressDialog?.show()
+        }
         currentActivity.get()?.lifecycleScope?.launch(Dispatchers.IO) {
             var urlConnection: URLConnection? = null
             try {
@@ -74,14 +77,22 @@ class RenesisForceUpdate(activityRef: AppCompatActivity) {
             }
         }?.invokeOnCompletion { throwable ->
             currentActivity.get()?.let {
-                progressDialog?.dismiss()
+                if (enabledProgressBar) {
+                    progressDialog?.dismiss()
+                }
                 if (throwable == null && appVersionData != null) {
                     currentActivity.get()?.let {
                         it.lifecycleScope.launch(Dispatchers.Main) {
                             progressDialog?.dismiss()
                             if (!appVersionData!!.isAppRunnable(appCurrentVersion)) {
                                 appVersionDialogFragment.alertContent = appVersionData!!
-                                appVersionDialogFragment.setupUIColors(cardBackgroundColor,contentColor,buttonBackgroundColor,buttonTextColor,defaultLogo)
+                                appVersionDialogFragment.setupUIColors(
+                                    cardBackgroundColor,
+                                    contentColor,
+                                    buttonBackgroundColor,
+                                    buttonTextColor,
+                                    defaultLogo
+                                )
                                 appVersionDialogFragment.show(it.supportFragmentManager, "")
                                 messageCode = ForceUpdateCodes.VERSION_NOT_MATCHED
                             } else {
@@ -106,9 +117,12 @@ class RenesisForceUpdate(activityRef: AppCompatActivity) {
     private fun getProgressDialog(context: Context?): AlertDialog? {
         context?.let {
             val dialogBuilder = AlertDialog.Builder(context)
-            val inflater =
-                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val dialogView = inflater.inflate(R.layout.progress_dialog, null)
+            progressBarColor?.let {progressColor->
+                val progressView=dialogView.findViewById<ProgressBar>(R.id.progressBar)
+                progressView.indeterminateTintList=it.colorStateList(progressColor)
+            }
             dialogBuilder.setView(dialogView)
             val alertDialog = dialogBuilder.create()
             alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
