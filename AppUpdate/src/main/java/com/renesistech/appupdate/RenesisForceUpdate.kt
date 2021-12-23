@@ -28,6 +28,7 @@ class RenesisForceUpdate(activityRef: AppCompatActivity) {
     private var messageCode = 0
 
     var buttonBackgroundColor:Int ? = null
+    var progressBarColor:Int ? = null
     var buttonTextColor:Int ? = null
     var contentColor:Int ? = null
     var cardBackgroundColor:Int ? = null
