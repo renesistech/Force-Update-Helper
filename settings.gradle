@@ -1,0 +1,4 @@
+
+rootProject.name = "App Force Update"
+include ':app'
+include ':AppUpdate'
