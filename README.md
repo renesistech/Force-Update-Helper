@@ -25,6 +25,19 @@ Library to check the latest version of app and Force user to update app on lates
         }	
 ```
 
+You can also customize app colors and logo accoridng to your app theme
+
+```
+
+	 val appForceUpdate = RenesisForceUpdate(this)
+        appForceUpdate.cardBackgroundColor=R.color.colorBlackWhite
+        appForceUpdate.buttonBackgroundColor=R.color.colorBlackWhite
+        appForceUpdate.buttonTextColor=R.color.colorBlackWhite
+        appForceUpdate.contentColor=R.color.colorBlackWhite
+        appForceUpdate.defaultLogo=R.drawable.android
+	
+```	
+
 
 
 # DOWNLOD
