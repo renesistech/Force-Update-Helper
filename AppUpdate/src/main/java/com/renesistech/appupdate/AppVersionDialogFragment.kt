@@ -17,7 +17,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.squareup.picasso.Picasso
 
-class AppVersionDialogFragment : DialogFragment() {
+internal class AppVersionDialogFragment : DialogFragment() {
 
     var alertContent: AppVersionData = AppVersionData()
     private var btnForceUpdate: TextView? = null
